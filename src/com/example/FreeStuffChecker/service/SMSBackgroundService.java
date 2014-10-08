@@ -8,19 +8,13 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.telephony.SmsManager;
-import android.util.Log;
 import com.example.FreeStuffChecker.adapter.ReceivedSMSAuditAdapter;
 import com.example.FreeStuffChecker.adapter.SentSMSAuditAdapter;
 import com.example.FreeStuffChecker.adapter.impl.ReceivedSMSAuditAdapterImpl;
 import com.example.FreeStuffChecker.adapter.impl.SentSMSAuditAdapterImpl;
 import com.example.FreeStuffChecker.broadcast.receiver.sms.SMSSender;
-import com.example.FreeStuffChecker.model.ReceivedSMS;
 import com.example.FreeStuffChecker.model.SentSMS;
 import com.example.FreeStuffChecker.model.Type;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
 
 /**
  * Created by mbruncic on 7.10.2014
@@ -28,8 +22,7 @@ import java.util.Collection;
 public class SMSBackgroundService extends Service{
 
 //    public static final Logger LOGGER = LoggerFactory.getLogger(SMSBackgroundService.class);
-    public static final long MINUTE = AlarmManager.INTERVAL_HOUR / 60;
-    public static final long INTERVAL = AlarmManager.INTERVAL_HOUR;
+    public long interval = AlarmManager.INTERVAL_HOUR;
     private static SMSBackgroundService instance;
     private AlarmManager alarmManager;
     private PendingIntent activity;
@@ -67,7 +60,7 @@ public class SMSBackgroundService extends Service{
     private void startAlarmManager() {
         alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         activity = PendingIntent.getBroadcast(this, 0, new Intent("SMS sender"), 0);
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 0 , INTERVAL, activity);
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 0 , interval, activity);
         registerReceiver(SMSSender.getInstance(), new IntentFilter("SMS sender"));
     }
 
@@ -88,7 +81,8 @@ public class SMSBackgroundService extends Service{
         }
     }
 
-    public Collection<ReceivedSMS> getAllSuccessfulChecks(Context context){
-        return receivedSMSAuditAdapter.findAll(context);
+    //TODO should return object with value and unit
+    public long getInterval(){
+        return interval;
     }
 }

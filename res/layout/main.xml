@@ -1,31 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-        >
-    <Button android:id="@+id/sendButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/buttonText"/>
-    <Button android:id="@+id/resetLogsButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/resetLogsButtonText"/>
-    <Button android:id="@+id/printSentSMSesButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/printSentSMSesButtonText"/>
-    <Button android:id="@+id/printReceivedSMSes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/printReceivedSMSesButton"/>
-    <TableLayout android:id="@+id/table"
-                 android:layout_width="fill_parent"
-                 android:layout_height="fill_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+              android:layout_height="match_parent" android:orientation="vertical">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
+                  android:orientation="vertical" android:visibility="visible" android:id="@+id/mainScreen">
+
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/settingsButton" android:layout_gravity="end"
+                android:src="@android:drawable/ic_menu_preferences"
+                android:visibility="visible" android:clickable="false" android:contentDescription="Setting"/>
+        <Button android:id="@+id/sendButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/buttonText"/>
+        <Button android:id="@+id/resetLogsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/resetLogsButtonText"/>
+        <Button android:id="@+id/printSentSMSesButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/printSentSMSesButtonText"/>
+        <Button android:id="@+id/printReceivedSMSes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/printReceivedSMSesButton"/>
+        <TableLayout android:id="@+id/table"
+                     android:layout_width="fill_parent"
+                     android:layout_height="fill_parent">
+        </TableLayout>
+    </LinearLayout>
+    <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" android:orientation="vertical" android:id="@+id/settingsScreen"
+            android:visibility="gone">
+        <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Check interval"
+                    android:id="@+id/checkIntervalText" android:layout_column="0"/>
+            <EditText
+                    android:id="@+id/checkIntervalInput"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:layout_column="1"/>
+        </TableRow>
+        <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Save"
+                    android:id="@+id/saveSettingsButton" android:layout_gravity="bottom|right" android:layout_column="1"
+                    />
+        </TableRow>
     </TableLayout>
 </LinearLayout>

@@ -1,6 +1,7 @@
 package com.example.FreeStuffChecker;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.*;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,13 +33,9 @@ public class MainActivity extends Activity {
         createUI();
 
 //        dropDB(this);
-        startService(new Intent(this, SMSBackgroundService.class));
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        stopService(new Intent(this, SMSBackgroundService.class));
+        if (!isMyServiceRunning(SMSBackgroundService.class)) {
+            startService(new Intent(this, SMSBackgroundService.class));
+        }
     }
 
     private void dropDB(Context context) {
@@ -79,7 +76,28 @@ public class MainActivity extends Activity {
                 resetAllLogs();
             }
         });
+        findViewById(R.id.settingsButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                populateSettings();
+                findViewById(R.id.mainScreen).setVisibility(View.GONE);
+                findViewById(R.id.settingsScreen).setVisibility(View.VISIBLE);
+            }
+        });
 
+        findViewById(R.id.saveSettingsButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO save settings in application, think about persisting
+                findViewById(R.id.mainScreen).setVisibility(View.VISIBLE);
+                findViewById(R.id.settingsScreen).setVisibility(View.GONE);
+            }
+        });
+
+    }
+
+    private void populateSettings() {
+        ((EditText)findViewById(R.id.checkIntervalInput)).setText(String.valueOf(SMSBackgroundService.getInstance().getInterval()));
     }
 
     private void printSentSMSes() {
@@ -111,5 +129,15 @@ public class MainActivity extends Activity {
             tableRow.addView(textView);
             tableLayout.addView(tableRow, new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.WRAP_CONTENT));
         }
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
