@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">FreeStuffChecker - BETA</string>
+    <string name="buttonText">Check status</string>
+    <string name="printLogsButtonText">Print all logs</string>
+    <string name="resetLogsButtonText">Reset all logs</string>
+    <string name="printSentSMSesButtonText">Print sent SMSes</string>
+    <string name="printReceivedSMSesButton">Print received SMSes</string>
+</resources>
