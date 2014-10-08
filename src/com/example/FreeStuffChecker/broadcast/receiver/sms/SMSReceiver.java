@@ -35,11 +35,16 @@ public class SMSReceiver extends BroadcastReceiver {
                 return;
             }
             SmsMessage message = SmsMessage.createFromPdu((byte[]) pdus[0]);
-            if (message.getOriginatingAddress().equals("13411")){
-                String text = message.getMessageBody();
-                ReceivedSMS receivedSMS = extractStuff(text);
-                Toast.makeText(context, receivedSMS.toString(), Toast.LENGTH_LONG).show();
-                receivedSMSAuditAdapter.insert(context, receivedSMS);
+            if (message.getOriginatingAddress().equals("13411") && message.getMessageBody().startsWith("Preostalo ti je ")){
+                try {
+                    String text = message.getMessageBody();
+                    ReceivedSMS receivedSMS = extractStuff(text);
+                    Toast.makeText(context, receivedSMS.toString(), Toast.LENGTH_LONG).show();
+                    receivedSMSAuditAdapter.insert(context, receivedSMS);
+                } catch (Exception e){
+                    //TODO LOGGER
+                }
+                abortBroadcast();
             }
         }
     }
