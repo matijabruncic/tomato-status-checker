@@ -11,7 +11,9 @@ import com.example.FreeStuffChecker.adapter.SentSMSAuditAdapter;
 import com.example.FreeStuffChecker.adapter.impl.NetworkStatusAdapterImpl;
 import com.example.FreeStuffChecker.adapter.impl.ReceivedSMSAuditAdapterImpl;
 import com.example.FreeStuffChecker.adapter.impl.SentSMSAuditAdapterImpl;
+import com.example.FreeStuffChecker.config.InternalSettings;
 import com.example.FreeStuffChecker.config.Settings;
+import com.example.FreeStuffChecker.model.Layout;
 import com.example.FreeStuffChecker.model.ReceivedSMS;
 import com.example.FreeStuffChecker.model.SentSMS;
 import com.example.FreeStuffChecker.service.SMSBackgroundService;
@@ -22,7 +24,12 @@ public class MainActivity extends Activity {
 
     private final ReceivedSMSAuditAdapter receivedSMSAuditAdapter = ReceivedSMSAuditAdapterImpl.getInstance();
     private final SentSMSAuditAdapter sentSMSAuditAdapter = SentSMSAuditAdapterImpl.getInstance();
+    private final InternalSettings internalSettings = InternalSettings.getInstance();
     private final Settings settings = Settings.getInstance();
+    private List<View> allViews = Arrays.asList(
+            findViewById(R.id.mainScreen),
+            findViewById(R.id.settingsScreen)
+    );
 
     /**
      * Called when the activity is first created.
@@ -36,7 +43,7 @@ public class MainActivity extends Activity {
     }
 
     private void initialize() {
-        if (settings.getNetworkConnected()==null){
+        if (internalSettings.getNetworkConnected() == null) {
             NetworkStatusAdapterImpl.getInstance().checkAndFixNetworkStatus(this);
         }
         if (!isMyServiceRunning(SMSBackgroundService.class)) {
@@ -79,8 +86,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 populateSettingsView();
-                findViewById(R.id.mainScreen).setVisibility(View.GONE);
-                findViewById(R.id.settingsScreen).setVisibility(View.VISIBLE);
+                changeVisibleLayout(Layout.SETTINGS_SCREEN);
             }
         });
 
@@ -88,15 +94,38 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 //TODO save settings in application, think about persisting
-                findViewById(R.id.mainScreen).setVisibility(View.VISIBLE);
-                findViewById(R.id.settingsScreen).setVisibility(View.GONE);
+                changeVisibleLayout(Layout.MAIN_SCREEN);
             }
         });
 
     }
 
+    private void changeVisibleLayout(Layout layout) {
+        switch (layout) {
+            case MAIN_SCREEN: {
+                setAllLayoutsToGone();
+                findViewById(R.id.mainScreen).setVisibility(View.VISIBLE);
+                break;
+            }
+            case SETTINGS_SCREEN: {
+                setAllLayoutsToGone();
+                findViewById(R.id.settingsScreen).setVisibility(View.VISIBLE);
+                break;
+            }
+        }
+    }
+
+    private void setAllLayoutsToGone() {
+        for (View view : allViews) {
+            view.setVisibility(View.GONE);
+        }
+    }
+
     private void populateSettingsView() {
-        ((EditText)findViewById(R.id.checkIntervalInput)).setText(String.valueOf(settings.getInterval()));
+        ((EditText) findViewById(R.id.checkIntervalInput)).setText(String.valueOf(settings.getInterval()));
+        ((EditText) findViewById(R.id.minuteAlertThresholdInput)).setText(String.valueOf(settings.getMinuteAlert()));
+        ((EditText) findViewById(R.id.smsCountThresholdInput)).setText(String.valueOf(settings.getSmsCountAlert()));
+        ((EditText) findViewById(R.id.internetTrafficAlertThresholdInput)).setText(String.valueOf(settings.getInternetTrafficAlert()));
     }
 
     private void printSentSMSes() {

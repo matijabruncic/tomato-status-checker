@@ -36,7 +36,7 @@ public class ReceivedSMSAuditAdapterImpl implements ReceivedSMSAuditAdapter {
         values.put(ReceivedSMSesProvider.ReceivedSMSesEntity.COLUMN_NAME_TIMESTAMP, receivedSMS.getTimestamp());
         values.put(ReceivedSMSesProvider.ReceivedSMSesEntity.COLUMN_NAME_MINUTE, receivedSMS.getMinute());
         values.put(ReceivedSMSesProvider.ReceivedSMSesEntity.COLUMN_NAME_SECOND, receivedSMS.getSecond());
-        values.put(ReceivedSMSesProvider.ReceivedSMSesEntity.COLUMN_NAME_MEGA_BYTE, receivedSMS.getMegabyte());
+        values.put(ReceivedSMSesProvider.ReceivedSMSesEntity.COLUMN_NAME_INTERNET_TRAFFIC, receivedSMS.getInternetTraffic());
         values.put(ReceivedSMSesProvider.ReceivedSMSesEntity.COLUMN_NAME_SMS_COUNT, receivedSMS.getSmsCount());
         return writableDatabase.insert(ReceivedSMSesProvider.ReceivedSMSesEntity.TABLE_NAME, null, values);
     }
@@ -52,9 +52,9 @@ public class ReceivedSMSAuditAdapterImpl implements ReceivedSMSAuditAdapter {
                 long timestamp = cursor.getLong(cursor.getColumnIndex(ReceivedSMSesProvider.ReceivedSMSesEntity.COLUMN_NAME_TIMESTAMP));
                 int minute = cursor.getInt(cursor.getColumnIndex(ReceivedSMSesProvider.ReceivedSMSesEntity.COLUMN_NAME_MINUTE));
                 int second = cursor.getInt(cursor.getColumnIndex(ReceivedSMSesProvider.ReceivedSMSesEntity.COLUMN_NAME_SECOND));
-                int megaByte = cursor.getInt(cursor.getColumnIndex(ReceivedSMSesProvider.ReceivedSMSesEntity.COLUMN_NAME_MEGA_BYTE));
+                int internetTraffic = cursor.getInt(cursor.getColumnIndex(ReceivedSMSesProvider.ReceivedSMSesEntity.COLUMN_NAME_INTERNET_TRAFFIC));
                 int smsCount= cursor.getInt(cursor.getColumnIndex(ReceivedSMSesProvider.ReceivedSMSesEntity.COLUMN_NAME_SMS_COUNT));
-                result.add(new ReceivedSMS(id, minute, second, megaByte, smsCount, timestamp));
+                result.add(new ReceivedSMS(id, minute, second, internetTraffic, smsCount, timestamp));
                 cursor.moveToNext();
             }
         }

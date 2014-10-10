@@ -7,33 +7,33 @@ public class ReceivedSMS implements Comparable<ReceivedSMS>{
     long id;
     int minute;
     int second;
-    int megabyte;
+    int internetTraffic;
     int smsCount;
     long timestamp;
 
-    public ReceivedSMS(long id, int minute, int second, int megabyte, int smsCount, long timestamp) {
+    public ReceivedSMS(long id, int minute, int second, int internetTraffic, int smsCount, long timestamp) {
         this.id = id;
         this.minute = minute;
         this.second = second;
-        this.megabyte = megabyte;
+        this.internetTraffic = internetTraffic;
         this.smsCount = smsCount;
         this.timestamp = timestamp;
     }
 
-    public ReceivedSMS(int minute, int second, int megabyte, int smsCount, long timestamp) {
+    public ReceivedSMS(int minute, int second, int internetTraffic, int smsCount, long timestamp) {
         this.minute = minute;
         this.second = second;
-        this.megabyte = megabyte;
+        this.internetTraffic = internetTraffic;
         this.smsCount = smsCount;
         this.timestamp = timestamp;
     }
 
-    public int getMegabyte() {
-        return megabyte;
+    public int getInternetTraffic() {
+        return internetTraffic;
     }
 
-    public void setMegabyte(int megabyte) {
-        this.megabyte = megabyte;
+    public void setInternetTraffic(int internetTraffic) {
+        this.internetTraffic = internetTraffic;
     }
 
     public int getSmsCount() {
@@ -78,7 +78,7 @@ public class ReceivedSMS implements Comparable<ReceivedSMS>{
 
     @Override
     public String toString() {
-        return new CustomDateFormat().format(timestamp) + "\tMB:" + megabyte + "\tSMS:" + smsCount + "\tMin:" + minute;
+        return new CustomDateFormat().format(timestamp) + "\tMB:" + internetTraffic + "\tSMS:" + smsCount + "\tMin:" + minute;
     }
 
     @Override

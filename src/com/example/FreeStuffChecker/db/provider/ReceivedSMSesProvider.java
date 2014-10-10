@@ -10,7 +10,7 @@ import android.provider.BaseColumns;
  */
 public class ReceivedSMSesProvider extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "ReceivedSMSes.db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
 
     public ReceivedSMSesProvider(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -24,7 +24,7 @@ public class ReceivedSMSesProvider extends SQLiteOpenHelper {
                 ReceivedSMSesEntity.COLUMN_NAME_TIMESTAMP,
                 ReceivedSMSesEntity.COLUMN_NAME_MINUTE,
                 ReceivedSMSesEntity.COLUMN_NAME_SECOND,
-                ReceivedSMSesEntity.COLUMN_NAME_MEGA_BYTE,
+                ReceivedSMSesEntity.COLUMN_NAME_INTERNET_TRAFFIC,
                 ReceivedSMSesEntity.COLUMN_NAME_SMS_COUNT
         );
         sqLiteDatabase.execSQL(query);
@@ -41,7 +41,7 @@ public class ReceivedSMSesProvider extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_TIMESTAMP = "timestamp";
         public static final String COLUMN_NAME_MINUTE = "minute";
         public static final String COLUMN_NAME_SECOND = "second";
-        public static final String COLUMN_NAME_MEGA_BYTE = "megabyte";
+        public static final String COLUMN_NAME_INTERNET_TRAFFIC = "internetTraffic";
         public static final String COLUMN_NAME_SMS_COUNT = "SMSCount";
     }
 }

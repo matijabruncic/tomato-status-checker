@@ -9,7 +9,7 @@ import android.widget.Toast;
 import com.example.FreeStuffChecker.adapter.ReceivedSMSAuditAdapter;
 import com.example.FreeStuffChecker.adapter.impl.ReceivedSMSAuditAdapterImpl;
 import com.example.FreeStuffChecker.listener.StatusListener;
-import com.example.FreeStuffChecker.listener.impl.MegaByteStatusListener;
+import com.example.FreeStuffChecker.listener.impl.InternetTrafficStatusListener;
 import com.example.FreeStuffChecker.listener.impl.MinuteStatusListener;
 import com.example.FreeStuffChecker.listener.impl.SmsCountStatusListener;
 import com.example.FreeStuffChecker.model.ReceivedSMS;
@@ -30,7 +30,7 @@ public class SMSReceiver extends BroadcastReceiver {
     public static final Pattern MB_PATTERN = Pattern.compile("\\s[0-9]*\\sMB");
     public static final Pattern DIGIT_PATTERN = Pattern.compile("[0-9]+");
     private ReceivedSMSAuditAdapter receivedSMSAuditAdapter = ReceivedSMSAuditAdapterImpl.getInstance();
-    private List<? extends StatusListener> listeners = Arrays.asList(new MegaByteStatusListener(), new SmsCountStatusListener(), new MinuteStatusListener());
+    private List<? extends StatusListener> listeners = Arrays.asList(new InternetTrafficStatusListener(), new SmsCountStatusListener(), new MinuteStatusListener());
 
     @Override
     public void onReceive(Context context, Intent intent) {

@@ -9,29 +9,21 @@ public class Settings {
 
     private static Settings instance;
 
-    private Boolean networkConnected;
+
     private long interval = AlarmManager.INTERVAL_HOUR;
-    private long megaByteAlert = 100;
+    private long internetTrafficAlert = 100;
     private long smsCountAlert = 50;
-    private long minuteAlert=999; //TODO change this
+    private long minuteAlert = 100;
 
     public static Settings getInstance() {
-        if (instance==null){
-            instance=new Settings();
+        if (instance == null) {
+            instance = new Settings();
         }
         return instance;
     }
 
-    public Boolean getNetworkConnected() {
-        return networkConnected;
-    }
-
-    public void setNetworkConnected(Boolean networkConnected) {
-        this.networkConnected = networkConnected;
-    }
-
     //TODO should return object with value and unit
-    public long getInterval(){
+    public long getInterval() {
         return interval;
     }
 
@@ -39,12 +31,12 @@ public class Settings {
         this.interval = interval;
     }
 
-    public long getMegaByteAlert() {
-        return megaByteAlert;
+    public long getInternetTrafficAlert() {
+        return internetTrafficAlert;
     }
 
-    public void setMegaByteAlert(long megaByteAlert) {
-        this.megaByteAlert = megaByteAlert;
+    public void setInternetTrafficAlert(long internetTrafficAlert) {
+        this.internetTrafficAlert = internetTrafficAlert;
     }
 
     public long getSmsCountAlert() {
