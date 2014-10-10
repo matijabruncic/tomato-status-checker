@@ -11,8 +11,8 @@ import android.telephony.SmsManager;
 import com.example.FreeStuffChecker.adapter.SentSMSAuditAdapter;
 import com.example.FreeStuffChecker.adapter.impl.NetworkStatusAdapterImpl;
 import com.example.FreeStuffChecker.adapter.impl.SentSMSAuditAdapterImpl;
-import com.example.FreeStuffChecker.broadcast.receiver.boot.NetworkStatusReceiver;
 import com.example.FreeStuffChecker.broadcast.receiver.sms.SMSSender;
+import com.example.FreeStuffChecker.config.InternalSettings;
 import com.example.FreeStuffChecker.config.Settings;
 import com.example.FreeStuffChecker.model.SentSMS;
 import com.example.FreeStuffChecker.model.Type;
@@ -27,7 +27,7 @@ public class SMSBackgroundService extends Service{
     private AlarmManager alarmManager;
     private PendingIntent activity;
     private SentSMSAuditAdapter sentSMSAuditAdapter = SentSMSAuditAdapterImpl.getInstance();
-    private Settings settings = Settings.getInstance();
+    private InternalSettings internalSettings = InternalSettings.getInstance();
 
     /**
      * Should use only getInstance, please do not use constructor!
@@ -60,7 +60,7 @@ public class SMSBackgroundService extends Service{
     private void startAlarmManager() {
         alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         activity = PendingIntent.getBroadcast(this, 0, new Intent("SMS sender"), 0);
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 0 , settings.getInterval(), activity);
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 0 , internalSettings.getInterval(), activity);
         registerReceiver(SMSSender.getInstance(), new IntentFilter("SMS sender"));
     }
 
@@ -70,7 +70,7 @@ public class SMSBackgroundService extends Service{
 
     public void sendSMS(Context context, String destinationAddress, String text, Type type) {
         try {
-            if (settings.getNetworkConnected()==null){
+            if (internalSettings.getNetworkConnected()==null){
                 NetworkStatusAdapterImpl.getInstance();
             }
             if (isNetworkConnected()) {
@@ -88,7 +88,7 @@ public class SMSBackgroundService extends Service{
     }
 
     private boolean isNetworkConnected() {
-        Boolean networkConnected = settings.getNetworkConnected();
+        Boolean networkConnected = internalSettings.getNetworkConnected();
         if (networkConnected == null){
             return false;
         }

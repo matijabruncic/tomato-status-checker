@@ -3,7 +3,7 @@ package com.example.FreeStuffChecker.broadcast.receiver.boot;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import com.example.FreeStuffChecker.config.Settings;
+import com.example.FreeStuffChecker.config.InternalSettings;
 import com.example.FreeStuffChecker.service.SMSBackgroundService;
 
 /**
@@ -12,11 +12,11 @@ import com.example.FreeStuffChecker.service.SMSBackgroundService;
 public class BootUpReceiver extends BroadcastReceiver {
 
     private SMSBackgroundService smsBackgroundService = SMSBackgroundService.getInstance();
-    private Settings settings = Settings.getInstance();
+    private InternalSettings internalSettings = InternalSettings.getInstance();
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        settings.setNetworkConnected(false);
+        internalSettings.setNetworkConnected(false);
         smsBackgroundService.onStartCommand(intent, intent.getFlags(), 0);
     }
 }

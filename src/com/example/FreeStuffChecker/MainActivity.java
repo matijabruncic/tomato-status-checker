@@ -26,10 +26,7 @@ public class MainActivity extends Activity {
     private final SentSMSAuditAdapter sentSMSAuditAdapter = SentSMSAuditAdapterImpl.getInstance();
     private final InternalSettings internalSettings = InternalSettings.getInstance();
     private final Settings settings = Settings.getInstance();
-    private List<View> allViews = Arrays.asList(
-            findViewById(R.id.mainScreen),
-            findViewById(R.id.settingsScreen)
-    );
+    private List<View> allViews = new ArrayList<View>();
 
     /**
      * Called when the activity is first created.
@@ -37,9 +34,10 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+        initialize();
         createUI();
 
-        initialize();
     }
 
     private void initialize() {
@@ -49,11 +47,11 @@ public class MainActivity extends Activity {
         if (!isMyServiceRunning(SMSBackgroundService.class)) {
             startService(new Intent(this, SMSBackgroundService.class));
         }
+        allViews.add(findViewById(R.id.mainScreen));
+        allViews.add(findViewById(R.id.settingsScreen));
     }
 
     private void createUI() {
-
-        setContentView(R.layout.main);
 
         findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,10 +92,23 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 //TODO save settings in application, think about persisting
+                saveSettings();
                 changeVisibleLayout(Layout.MAIN_SCREEN);
             }
         });
 
+    }
+
+    private void saveSettings() {
+        settings.setInterval(Long.valueOf(getValue(R.id.checkIntervalInput)));
+        settings.setInternetTrafficAlert(Long.valueOf(getValue(R.id.internetTrafficAlertThresholdInput)));
+        settings.setMinuteAlert(Long.valueOf(getValue(R.id.minuteAlertThresholdInput)));
+        settings.setSmsCountAlert(Long.valueOf(getValue(R.id.smsCountThresholdInput)));
+    }
+
+    private String getValue(int checkIntervalInputId) {
+        EditText editText = (EditText) findViewById(checkIntervalInputId);
+        return editText.getText().toString();
     }
 
     private void changeVisibleLayout(Layout layout) {

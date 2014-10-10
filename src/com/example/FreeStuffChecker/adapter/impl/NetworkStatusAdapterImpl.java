@@ -4,14 +4,13 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import com.example.FreeStuffChecker.adapter.NetworkStatusAdapter;
-import com.example.FreeStuffChecker.config.Settings;
-import com.example.FreeStuffChecker.service.SMSBackgroundService;
+import com.example.FreeStuffChecker.config.InternalSettings;
 
 /**
  * Created by mbruncic on 10.10.2014
  */
 public class NetworkStatusAdapterImpl implements NetworkStatusAdapter{
-    private Settings settings = Settings.getInstance();
+    private InternalSettings internalSettings = InternalSettings.getInstance();
     private static NetworkStatusAdapterImpl instance;
 
     public static NetworkStatusAdapterImpl getInstance() {
@@ -26,9 +25,9 @@ public class NetworkStatusAdapterImpl implements NetworkStatusAdapter{
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         if (mobNetInfo.getState().equals(NetworkInfo.State.CONNECTED)) {
-            settings.setNetworkConnected(true);
+            internalSettings.setNetworkConnected(true);
         } else {
-            settings.setNetworkConnected(true);
+            internalSettings.setNetworkConnected(true);
         }
 
     }
