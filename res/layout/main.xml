@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
               android:layout_height="match_parent" android:orientation="vertical">
     <LinearLayout android:layout_width="match_parent" android:layout_height="match_parent"
-                  android:orientation="vertical" android:visibility="visible" android:id="@+id/mainScreen">
+                  android:orientation="vertical" android:visibility="gone" android:id="@+id/mainScreen">
 
         <ImageButton
                 android:layout_width="wrap_content"
@@ -38,58 +38,51 @@
     <TableLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent" android:orientation="vertical" android:id="@+id/settingsScreen"
-            android:visibility="gone">
-        <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" android:id="@+id/checkIntervalRow">
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Check interval"
-                    android:id="@+id/checkIntervalText" android:layout_column="0"/>
-            <EditText
-                    android:id="@+id/checkIntervalInput"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:ems="10"
-                    android:layout_column="1"/>
+            android:visibility="visible">
+        <TableRow android:layout_width="fill_parent" android:layout_height="fill_parent"
+                  android:id="@+id/checkIntervalRow">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:text="Check interval"
+                      android:layout_column="0" android:id="@+id/checkIntervalText" android:autoText="false"/>
+            <SeekBar android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/checkIntervalInput"
+                     android:layout_column="2" android:max="24" android:indeterminate="false"/>
         </TableRow>
         <TableRow android:layout_width="fill_parent" android:layout_height="fill_parent"
                   android:id="@+id/minuteAlertThresholdRow">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:text="Minute alert threshold" android:id="@+id/minuteAlertThresholdText" android:layout_column="0"/>
-            <EditText android:id="@+id/minuteAlertThresholdInput" android:layout_width="wrap_content"
-                      android:layout_height="wrap_content" android:inputType="number" android:ems="10"
-                      android:layout_column="1"/>
+            <SeekBar android:layout_width="wrap_content" android:layout_height="wrap_content"
+                     android:id="@+id/minuteAlertThresholdInput" android:layout_column="2" android:max="1000"
+                     android:indeterminate="false"/>
         </TableRow>
         <TableRow android:layout_width="fill_parent" android:layout_height="fill_parent"
                   android:id="@+id/internetTrafficAlertThresholdRow">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:text="Internet traffic alert threshold" android:id="@+id/internetTrafficAlertThresholdText"
                       android:layout_column="0"/>
-            <EditText android:id="@+id/internetTrafficAlertThresholdInput" android:layout_width="wrap_content"
-                      android:layout_height="wrap_content" android:inputType="number" android:ems="10"
-                      android:layout_column="1"/>
+            <SeekBar android:layout_width="wrap_content" android:layout_height="wrap_content"
+                     android:id="@+id/internetTrafficAlertThresholdInput" android:layout_column="2" android:max="1000"
+                     android:indeterminate="false"/>
         </TableRow>
         <TableRow android:layout_width="fill_parent" android:layout_height="fill_parent"
                   android:id="@+id/smsCountThresholdRow">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:text="SMS count alert threshold"
                       android:layout_column="0" android:id="@+id/smsCountThresholdText"/>
-            <EditText android:id="@+id/smsCountThresholdInput" android:layout_width="wrap_content"
+            <SeekBar android:layout_width="wrap_content" android:layout_height="wrap_content"
+                     android:id="@+id/smsCountThresholdInput" android:layout_column="2" android:max="1000"
+                     android:indeterminate="false"/>
+        </TableRow>
+        <TableRow android:layout_width="fill_parent" android:layout_height="fill_parent"
+                  android:id="@+id/tableRow" android:visibility="invisible">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:text="SMS count alert threshold" android:layout_column="0"
+                      android:id="@+id/textView"/>
+            <EditText android:id="@+id/editText" android:layout_width="wrap_content"
                       android:layout_height="wrap_content" android:inputType="number" android:ems="10"
-                      android:layout_column="1"/>
+                      android:layout_column="2"/>
         </TableRow>
-        <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-            <Button
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Save"
-                    android:id="@+id/saveSettingsButton" android:layout_gravity="bottom|right" android:layout_column="1"
-                    />
-        </TableRow>
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Save"
+                android:id="@+id/saveSettingsButton" android:layout_gravity="bottom|right"/>
     </TableLayout>
 </LinearLayout>

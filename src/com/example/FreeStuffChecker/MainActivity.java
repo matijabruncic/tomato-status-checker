@@ -100,15 +100,15 @@ public class MainActivity extends Activity {
     }
 
     private void saveSettings() {
-        settings.setInterval(Long.valueOf(getValue(R.id.checkIntervalInput)));
-        settings.setInternetTrafficAlert(Long.valueOf(getValue(R.id.internetTrafficAlertThresholdInput)));
-        settings.setMinuteAlert(Long.valueOf(getValue(R.id.minuteAlertThresholdInput)));
-        settings.setSmsCountAlert(Long.valueOf(getValue(R.id.smsCountThresholdInput)));
+        settings.setInterval((long) getValue(R.id.checkIntervalInput));
+        settings.setInternetTrafficAlert((long) getValue(R.id.internetTrafficAlertThresholdInput));
+        settings.setMinuteAlert((long) getValue(R.id.minuteAlertThresholdInput));
+        settings.setSmsCountAlert((long) getValue(R.id.smsCountThresholdInput));
     }
 
-    private String getValue(int checkIntervalInputId) {
-        EditText editText = (EditText) findViewById(checkIntervalInputId);
-        return editText.getText().toString();
+    private int getValue(int checkIntervalInputId) {
+        SeekBar seekBar = (SeekBar) findViewById(checkIntervalInputId);
+        return seekBar.getProgress();
     }
 
     private void changeVisibleLayout(Layout layout) {
@@ -133,10 +133,10 @@ public class MainActivity extends Activity {
     }
 
     private void populateSettingsView() {
-        ((EditText) findViewById(R.id.checkIntervalInput)).setText(String.valueOf(settings.getInterval()));
-        ((EditText) findViewById(R.id.minuteAlertThresholdInput)).setText(String.valueOf(settings.getMinuteAlert()));
-        ((EditText) findViewById(R.id.smsCountThresholdInput)).setText(String.valueOf(settings.getSmsCountAlert()));
-        ((EditText) findViewById(R.id.internetTrafficAlertThresholdInput)).setText(String.valueOf(settings.getInternetTrafficAlert()));
+        ((SeekBar) findViewById(R.id.checkIntervalInput)).setProgress((int) settings.getInterval());
+        ((SeekBar) findViewById(R.id.minuteAlertThresholdInput)).setProgress((int) settings.getMinuteAlert());
+        ((SeekBar) findViewById(R.id.smsCountThresholdInput)).setProgress((int) settings.getSmsCountAlert());
+        ((SeekBar) findViewById(R.id.internetTrafficAlertThresholdInput)).setProgress((int) settings.getInternetTrafficAlert());
     }
 
     private void printSentSMSes() {
