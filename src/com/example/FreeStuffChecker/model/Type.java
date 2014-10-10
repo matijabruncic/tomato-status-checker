@@ -4,5 +4,5 @@ public enum Type {
     START_ALARM,
     CANCEL_ALARM,
     MANUAL,
-    ALARM_TICK
+    FAILED_NETWORK_NOT_CONNECTED, ALARM_TICK
 }

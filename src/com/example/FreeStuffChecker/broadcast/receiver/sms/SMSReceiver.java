@@ -8,8 +8,14 @@ import android.telephony.SmsMessage;
 import android.widget.Toast;
 import com.example.FreeStuffChecker.adapter.ReceivedSMSAuditAdapter;
 import com.example.FreeStuffChecker.adapter.impl.ReceivedSMSAuditAdapterImpl;
+import com.example.FreeStuffChecker.listener.StatusListener;
+import com.example.FreeStuffChecker.listener.impl.MegaByteStatusListener;
+import com.example.FreeStuffChecker.listener.impl.MinuteStatusListener;
+import com.example.FreeStuffChecker.listener.impl.SmsCountStatusListener;
 import com.example.FreeStuffChecker.model.ReceivedSMS;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +30,7 @@ public class SMSReceiver extends BroadcastReceiver {
     public static final Pattern MB_PATTERN = Pattern.compile("\\s[0-9]*\\sMB");
     public static final Pattern DIGIT_PATTERN = Pattern.compile("[0-9]+");
     private ReceivedSMSAuditAdapter receivedSMSAuditAdapter = ReceivedSMSAuditAdapterImpl.getInstance();
+    private List<? extends StatusListener> listeners = Arrays.asList(new MegaByteStatusListener(), new SmsCountStatusListener(), new MinuteStatusListener());
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -41,6 +48,9 @@ public class SMSReceiver extends BroadcastReceiver {
                     ReceivedSMS receivedSMS = extractStuff(text);
                     Toast.makeText(context, receivedSMS.toString(), Toast.LENGTH_LONG).show();
                     receivedSMSAuditAdapter.insert(context, receivedSMS);
+                    for (StatusListener listener : listeners) {
+                        listener.onStatusChecked(context, receivedSMS);
+                    }
                 } catch (Exception e){
                     //TODO LOGGER
                 }

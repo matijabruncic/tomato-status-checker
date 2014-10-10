@@ -4,15 +4,14 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.*;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.*;
 import com.example.FreeStuffChecker.adapter.ReceivedSMSAuditAdapter;
 import com.example.FreeStuffChecker.adapter.SentSMSAuditAdapter;
+import com.example.FreeStuffChecker.adapter.impl.NetworkStatusAdapterImpl;
 import com.example.FreeStuffChecker.adapter.impl.ReceivedSMSAuditAdapterImpl;
 import com.example.FreeStuffChecker.adapter.impl.SentSMSAuditAdapterImpl;
-import com.example.FreeStuffChecker.db.provider.ReceivedSMSesProvider;
-import com.example.FreeStuffChecker.db.provider.SentSMSesProvider;
+import com.example.FreeStuffChecker.config.Settings;
 import com.example.FreeStuffChecker.model.ReceivedSMS;
 import com.example.FreeStuffChecker.model.SentSMS;
 import com.example.FreeStuffChecker.service.SMSBackgroundService;
@@ -23,6 +22,7 @@ public class MainActivity extends Activity {
 
     private final ReceivedSMSAuditAdapter receivedSMSAuditAdapter = ReceivedSMSAuditAdapterImpl.getInstance();
     private final SentSMSAuditAdapter sentSMSAuditAdapter = SentSMSAuditAdapterImpl.getInstance();
+    private final Settings settings = Settings.getInstance();
 
     /**
      * Called when the activity is first created.
@@ -32,17 +32,16 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         createUI();
 
-//        dropDB(this);
+        initialize();
+    }
+
+    private void initialize() {
+        if (settings.getNetworkConnected()==null){
+            NetworkStatusAdapterImpl.getInstance().checkAndFixNetworkStatus(this);
+        }
         if (!isMyServiceRunning(SMSBackgroundService.class)) {
             startService(new Intent(this, SMSBackgroundService.class));
         }
-    }
-
-    private void dropDB(Context context) {
-        SentSMSesProvider sentSMSesProvider = new SentSMSesProvider(context);
-        sentSMSesProvider.onUpgrade(sentSMSesProvider.getWritableDatabase(), 1, 1);
-        ReceivedSMSesProvider receivedSMSesProvider = new ReceivedSMSesProvider(context);
-        receivedSMSesProvider.onUpgrade(receivedSMSesProvider.getWritableDatabase(), 1, 1);
     }
 
     private void createUI() {
@@ -79,7 +78,7 @@ public class MainActivity extends Activity {
         findViewById(R.id.settingsButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                populateSettings();
+                populateSettingsView();
                 findViewById(R.id.mainScreen).setVisibility(View.GONE);
                 findViewById(R.id.settingsScreen).setVisibility(View.VISIBLE);
             }
@@ -96,8 +95,8 @@ public class MainActivity extends Activity {
 
     }
 
-    private void populateSettings() {
-        ((EditText)findViewById(R.id.checkIntervalInput)).setText(String.valueOf(SMSBackgroundService.getInstance().getInterval()));
+    private void populateSettingsView() {
+        ((EditText)findViewById(R.id.checkIntervalInput)).setText(String.valueOf(settings.getInterval()));
     }
 
     private void printSentSMSes() {

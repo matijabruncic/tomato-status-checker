@@ -8,11 +8,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.telephony.SmsManager;
-import com.example.FreeStuffChecker.adapter.ReceivedSMSAuditAdapter;
 import com.example.FreeStuffChecker.adapter.SentSMSAuditAdapter;
-import com.example.FreeStuffChecker.adapter.impl.ReceivedSMSAuditAdapterImpl;
+import com.example.FreeStuffChecker.adapter.impl.NetworkStatusAdapterImpl;
 import com.example.FreeStuffChecker.adapter.impl.SentSMSAuditAdapterImpl;
+import com.example.FreeStuffChecker.broadcast.receiver.boot.NetworkStatusReceiver;
 import com.example.FreeStuffChecker.broadcast.receiver.sms.SMSSender;
+import com.example.FreeStuffChecker.config.Settings;
 import com.example.FreeStuffChecker.model.SentSMS;
 import com.example.FreeStuffChecker.model.Type;
 
@@ -22,12 +23,11 @@ import com.example.FreeStuffChecker.model.Type;
 public class SMSBackgroundService extends Service{
 
 //    public static final Logger LOGGER = LoggerFactory.getLogger(SMSBackgroundService.class);
-    public long interval = AlarmManager.INTERVAL_HOUR;
     private static SMSBackgroundService instance;
     private AlarmManager alarmManager;
     private PendingIntent activity;
     private SentSMSAuditAdapter sentSMSAuditAdapter = SentSMSAuditAdapterImpl.getInstance();
-    private ReceivedSMSAuditAdapter receivedSMSAuditAdapter = ReceivedSMSAuditAdapterImpl.getInstance();
+    private Settings settings = Settings.getInstance();
 
     /**
      * Should use only getInstance, please do not use constructor!
@@ -60,7 +60,7 @@ public class SMSBackgroundService extends Service{
     private void startAlarmManager() {
         alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         activity = PendingIntent.getBroadcast(this, 0, new Intent("SMS sender"), 0);
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 0 , interval, activity);
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 0 , settings.getInterval(), activity);
         registerReceiver(SMSSender.getInstance(), new IntentFilter("SMS sender"));
     }
 
@@ -70,19 +70,28 @@ public class SMSBackgroundService extends Service{
 
     public void sendSMS(Context context, String destinationAddress, String text, Type type) {
         try {
-            PendingIntent activity = PendingIntent.getActivity(context, 0, new Intent(), 0);
-            SmsManager smsManager = SmsManager.getDefault();
-            smsManager.sendTextMessage(destinationAddress, null, text, activity, null);
-            sentSMSAuditAdapter.insert(context, new SentSMS(System.currentTimeMillis(), destinationAddress, text, type));
-            throw new RuntimeException();
+            if (settings.getNetworkConnected()==null){
+                NetworkStatusAdapterImpl.getInstance();
+            }
+            if (isNetworkConnected()) {
+                PendingIntent activity = PendingIntent.getActivity(context, 0, new Intent(), 0);
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(destinationAddress, null, text, activity, null);
+                sentSMSAuditAdapter.insert(context, new SentSMS(System.currentTimeMillis(), destinationAddress, text, type));
+            } else {
+                sentSMSAuditAdapter.insert(context, new SentSMS(System.currentTimeMillis(), destinationAddress, text, Type.FAILED_NETWORK_NOT_CONNECTED));
+            }
         } catch (Exception e){
 //            LOGGER.error(e.getMessage(), e);
             //TODO fix logger
         }
     }
 
-    //TODO should return object with value and unit
-    public long getInterval(){
-        return interval;
+    private boolean isNetworkConnected() {
+        Boolean networkConnected = settings.getNetworkConnected();
+        if (networkConnected == null){
+            return false;
+        }
+        return networkConnected;
     }
 }
