@@ -10,7 +10,7 @@ public class Settings {
     private static Settings instance;
 
 
-    private long interval = AlarmManager.INTERVAL_HOUR;
+    private long interval = 1;
     private long internetTrafficAlert = 100;
     private long smsCountAlert = 50;
     private long minuteAlert = 100;
@@ -22,7 +22,6 @@ public class Settings {
         return instance;
     }
 
-    //TODO should return object with value and unit
     public long getInterval() {
         return interval;
     }

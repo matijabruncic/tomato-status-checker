@@ -13,6 +13,7 @@ import com.example.FreeStuffChecker.adapter.impl.ReceivedSMSAuditAdapterImpl;
 import com.example.FreeStuffChecker.adapter.impl.SentSMSAuditAdapterImpl;
 import com.example.FreeStuffChecker.config.InternalSettings;
 import com.example.FreeStuffChecker.config.Settings;
+import com.example.FreeStuffChecker.listener.CustomSeekBarListener;
 import com.example.FreeStuffChecker.model.Layout;
 import com.example.FreeStuffChecker.model.ReceivedSMS;
 import com.example.FreeStuffChecker.model.SentSMS;
@@ -53,6 +54,7 @@ public class MainActivity extends Activity {
 
     private void createUI() {
 
+        populateSettingsView();
         findViewById(R.id.sendButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,6 +98,11 @@ public class MainActivity extends Activity {
                 changeVisibleLayout(Layout.MAIN_SCREEN);
             }
         });
+
+        ((SeekBar)findViewById(R.id.checkIntervalInput)).setOnSeekBarChangeListener(new CustomSeekBarListener());
+        ((SeekBar)findViewById(R.id.minuteAlertThresholdInput)).setOnSeekBarChangeListener(new CustomSeekBarListener());
+        ((SeekBar)findViewById(R.id.internetTrafficAlertThresholdInput)).setOnSeekBarChangeListener(new CustomSeekBarListener());
+        ((SeekBar)findViewById(R.id.smsCountThresholdInput)).setOnSeekBarChangeListener(new CustomSeekBarListener());
 
     }
 

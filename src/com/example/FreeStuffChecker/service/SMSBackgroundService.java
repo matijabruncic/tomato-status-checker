@@ -60,7 +60,7 @@ public class SMSBackgroundService extends Service{
     private void startAlarmManager() {
         alarmManager = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         activity = PendingIntent.getBroadcast(this, 0, new Intent("SMS sender"), 0);
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 0 , internalSettings.getInterval(), activity);
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME, 0 , internalSettings.getInterval() * AlarmManager.INTERVAL_HOUR, activity);
         registerReceiver(SMSSender.getInstance(), new IntentFilter("SMS sender"));
     }
 
