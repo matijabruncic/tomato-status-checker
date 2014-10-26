@@ -10,9 +10,10 @@ import com.example.FreeStuffChecker.model.ReceivedSMS;
 public class SmsCountStatusListener extends AbstractStatusListener {
 
     @Override
-    public void onStatusChecked(Context context, ReceivedSMS receivedSMS) {
+    public String onStatusChecked(Context context, ReceivedSMS receivedSMS) {
         if (receivedSMS.getSmsCount() <  settings.getSmsCountAlert()){
-            alert(context, "SMS count status:" + receivedSMS.getSmsCount());
+            return "SMS count status:" + receivedSMS.getSmsCount();
         }
+        return EMPTY_STRING;
     }
 }

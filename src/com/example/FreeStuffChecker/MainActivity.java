@@ -2,6 +2,7 @@ package com.example.FreeStuffChecker;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.*;
 import android.os.Bundle;
 import android.view.View;
@@ -18,16 +19,18 @@ import com.example.FreeStuffChecker.model.Layout;
 import com.example.FreeStuffChecker.model.ReceivedSMS;
 import com.example.FreeStuffChecker.model.SentSMS;
 import com.example.FreeStuffChecker.service.SMSBackgroundService;
+import com.example.FreeStuffChecker.somecrazyshit.TimesReadableString;
 
 import java.util.*;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements Alertable{
 
     private final ReceivedSMSAuditAdapter receivedSMSAuditAdapter = ReceivedSMSAuditAdapterImpl.getInstance();
     private final SentSMSAuditAdapter sentSMSAuditAdapter = SentSMSAuditAdapterImpl.getInstance();
     private final InternalSettings internalSettings = InternalSettings.getInstance();
     private final Settings settings = Settings.getInstance();
     private List<View> allViews = new ArrayList<View>();
+    private static TimesReadableString alert = new TimesReadableString(2);
 
     /**
      * Called when the activity is first created.
@@ -38,7 +41,28 @@ public class MainActivity extends Activity {
         setContentView(R.layout.main);
         initialize();
         createUI();
+    }
 
+    public static void setAlertText(String text) {
+        alert.setText(text);
+    }
+
+    @Override
+    public void alert() {
+        new AlertDialog.Builder(this)
+                .setMessage(alert.getText())
+                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                })
+                .create().show();
+    }
+
+    @Override
+    public boolean shouldBeAlerted() {
+        return alert.getText() != null;
     }
 
     private void initialize() {
@@ -185,5 +209,29 @@ public class MainActivity extends Activity {
             }
         }
         return false;
+    }
+
+    private static class MyRunnable implements Runnable{
+
+        private Alertable alertable;
+
+        private MyRunnable(Alertable alertable) {
+            this.alertable=alertable;
+        }
+
+        @Override
+        public void run() {
+            while (true){
+                if (alertable.shouldBeAlerted()){
+                    alertable.alert();
+                }
+                try {
+                    Thread.sleep(1000L);
+                } catch (InterruptedException e) {
+                    //TODO LOGGER
+                    return;
+                }
+            }
+        }
     }
 }

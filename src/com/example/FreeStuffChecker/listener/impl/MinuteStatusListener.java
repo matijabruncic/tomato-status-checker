@@ -9,9 +9,10 @@ import com.example.FreeStuffChecker.model.ReceivedSMS;
 public class MinuteStatusListener extends AbstractStatusListener {
 
     @Override
-    public void onStatusChecked(Context context, ReceivedSMS receivedSMS) {
+    public String onStatusChecked(Context context, ReceivedSMS receivedSMS) {
         if (receivedSMS.getMinute() < settings.getMinuteAlert()){
-            alert(context, "Minute status: " + receivedSMS.getMinute());
+            return "Minute status: " + receivedSMS.getMinute();
         }
+        return EMPTY_STRING;
     }
 }

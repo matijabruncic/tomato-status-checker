@@ -14,7 +14,7 @@ public class NetworkStatusReceiver extends BroadcastReceiver {
     private NetworkStatusAdapter networkStatusAdapter = NetworkStatusAdapterImpl.getInstance();
     private static NetworkStatusReceiver instance;
 
-    private NetworkStatusReceiver(){}
+    public NetworkStatusReceiver(){}
 
     public static NetworkStatusReceiver getInstance(){
         if (instance==null){
