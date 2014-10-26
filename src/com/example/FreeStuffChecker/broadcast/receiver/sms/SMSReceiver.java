@@ -14,30 +14,23 @@ import com.example.FreeStuffChecker.listener.impl.InternetTrafficStatusListener;
 import com.example.FreeStuffChecker.listener.impl.MinuteStatusListener;
 import com.example.FreeStuffChecker.listener.impl.SmsCountStatusListener;
 import com.example.FreeStuffChecker.model.ReceivedSMS;
-import com.example.FreeStuffChecker.service.SMSBackgroundService;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.*;
 
 /**
  * Created by mbruncic on 6.10.2014
  */
 public class SMSReceiver extends BroadcastReceiver {
 
-    public static final Pattern MIN_PATTERN = Pattern.compile("\\s[0-9]*\\smin");
-    public static final Pattern SEC_PATTERN = Pattern.compile("\\s[0-9]*\\ssec");
-    public static final Pattern SMS_PATTERN = Pattern.compile("\\s[0-9]*\\sSMS");
-    public static final Pattern MB_PATTERN = Pattern.compile("\\s[0-9]*\\sMB");
-    public static final Pattern DIGIT_PATTERN = Pattern.compile("[0-9]+");
-    public static final String MINUTE_PLACEHOLDER = "{minute}";
-    public static final String SECOND_PLACEHOLDER = "{second}";
-    public static final String SMS_COUNT_PLACEHOLDER = "{smsCount}";
-    public static final String INTERNET_PLACEHOLDER = "{internet}";
+    public static final Set<SmsPlaceholder> ORDER = new LinkedHashSet<SmsPlaceholder>(4){{
+        //default order, TODO change in runtime
+        add(SmsPlaceholder.MINUTE);
+        add(SmsPlaceholder.SECOND);
+        add(SmsPlaceholder.SMS_COUNT);
+        add(SmsPlaceholder.INTERNET);
+    }};
     private ReceivedSMSAuditAdapter receivedSMSAuditAdapter = ReceivedSMSAuditAdapterImpl.getInstance();
     private List<? extends StatusListener> listeners = Arrays.asList(new InternetTrafficStatusListener(), new SmsCountStatusListener(), new MinuteStatusListener());
-    private static String pattern;
 
 
     @Override
@@ -50,7 +43,8 @@ public class SMSReceiver extends BroadcastReceiver {
                 return;
             }
             SmsMessage message = SmsMessage.createFromPdu((byte[]) pdus[0]);
-            if (message.getOriginatingAddress().equals("13411") && (message.getMessageBody().startsWith("Preostalo ti je ") || message.getMessageBody().startsWith("Stanje preostalih besplatnih minuta"))){
+            if (isForMe(message)){
+                boolean shouldAbort=true;
                 try {
                     String text = message.getMessageBody();
                     ReceivedSMS receivedSMS = extractStuff(text);
@@ -65,50 +59,67 @@ public class SMSReceiver extends BroadcastReceiver {
                     }
                 } catch (Exception e){
                     //TODO LOGGER
+                    shouldAbort=false;
                 }
-                abortBroadcast();
+                if (shouldAbort) {
+                    abortBroadcast();
+                }
             }
         }
     }
 
-    public static ReceivedSMS extractStuff(String text) {
-        if (pattern==null)  return null;
-        String[] split = pattern.split("\\{.*?\\}");
-
-        for (String s : split) {
-            text = text.replace(s, " ");
+    private boolean isForMe(SmsMessage message) {
+        if(!message.getOriginatingAddress().equals("13411")){
+            return false;
         }
-        return null;
+        if (!(message.getMessageBody().startsWith("Preostalo ti je ") || message.getMessageBody().startsWith("Stanje preostalih besplatnih minuta"))){
+            return false;
+        }
+        return true;
     }
 
-    private static String getValue(String text, Pattern pattern) {
-        Matcher matcher = pattern.matcher(text);
-        matcher.find();
-        String result = matcher.group();
-        matcher = DIGIT_PATTERN.matcher(result);
-        matcher.find();
-        result = matcher.group();
-        return result;
+    public static ReceivedSMS extractStuff(String text) {
+        text = removeDate(text);
+        text = removeNonDigits(text);
+        String[] split = text.split("#");
+        if (split.length != ORDER.size()){
+            throw new IllegalStateException(String.format("Found %d numbers in SMS, configuration has %d number", split.length, ORDER.size()));
+        }
+        Integer minute = null, second = null, smsCount = null, internet = null;
+        Iterator<SmsPlaceholder> iterator = ORDER.iterator();
+        for (String aSplit : split) {
+            SmsPlaceholder key = iterator.next();
+            if (key.equals(SmsPlaceholder.MINUTE)) {
+                minute = Integer.parseInt(aSplit);
+            } else if (key.equals(SmsPlaceholder.SECOND)) {
+                second = Integer.parseInt(aSplit);
+            } else if (key.equals(SmsPlaceholder.SMS_COUNT)) {
+                smsCount = Integer.parseInt(aSplit);
+            } else if (key.equals(SmsPlaceholder.INTERNET)) {
+                internet = Integer.parseInt(aSplit);
+            } else {
+                throw new IllegalStateException("Unknown key: " + key);
+            }
+        }
+        return new ReceivedSMS(minute, second, internet, smsCount, System.currentTimeMillis());
     }
 
-    public static void setPattern(String pattern) throws IllegalArgumentException{
-        validatePattern(pattern);
-        SMSReceiver.pattern = pattern;
+    private static String removeNonDigits(String text) {
+        String s = text.replaceAll("\\D+", "#");
+        if (s.indexOf("#")==0){
+            s=s.substring(1, s.length());
+        }
+        if (s.lastIndexOf("#")==s.length()-1){
+            s=s.substring(0, s.length()-1);
+        }
+        return s;
     }
 
-    private static void validatePattern(String pattern) throws IllegalArgumentException{
-        if (!pattern.contains(MINUTE_PLACEHOLDER))      throw new IllegalArgumentException("Missing placeholder:"+MINUTE_PLACEHOLDER);
-        if (!pattern.contains(SECOND_PLACEHOLDER))      throw new IllegalArgumentException("Missing placeholder:"+SECOND_PLACEHOLDER);
-        if (!pattern.contains(SMS_COUNT_PLACEHOLDER))      throw new IllegalArgumentException("Missing placeholder:"+ SMS_COUNT_PLACEHOLDER);
-        if (!pattern.contains(INTERNET_PLACEHOLDER))      throw new IllegalArgumentException("Missing placeholder:"+INTERNET_PLACEHOLDER);
+    private static String removeDate(String text) {
+        return text.replaceAll("\\d{2}\\.\\d{2}\\.\\d{4}\\.", "");
     }
 
-    public static void main(String[] args) {
-        SMSReceiver.setPattern("Stanje preostalih besplatnih minuta u Brutalnoj tarifi je "+MINUTE_PLACEHOLDER+
-                " min i "+SECOND_PLACEHOLDER+
-                " sec, besplatnih SMS poruka "+SMS_COUNT_PLACEHOLDER+
-                " i besplatnih MB "+INTERNET_PLACEHOLDER+". Tarifa vrijedi do 16.11.2014.");
-        ReceivedSMS receivedSMS = SMSReceiver.extractStuff("Stanje preostalih besplatnih minuta u Brutalnoj tarifi je 991 min i 0 sec, besplatnih SMS poruka 986 i besplatnih MB 1474. Tarifa vrijedi do 16.11.2014.");
-        assert 991==receivedSMS.getMinute();
+    public static enum SmsPlaceholder{
+        MINUTE, SECOND, SMS_COUNT, INTERNET
     }
 }
