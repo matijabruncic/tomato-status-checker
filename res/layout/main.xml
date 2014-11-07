@@ -15,11 +15,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/buttonText"/>
-        <Button android:id="@+id/resetLogsButton"
+        <Button android:id="@+id/toggleScheduledCheck"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="@string/resetLogsButtonText"/>
+                android:text="@string/toggleScheduledCheck"/>
         <Button android:id="@+id/printSentSMSesButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

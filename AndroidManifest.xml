@@ -11,31 +11,31 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher" android:allowBackup="true">
-        <activity android:name=".MainActivity"
+        <activity android:name="com.example.tomato.MainActivity"
                   android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <receiver android:name=".broadcast.receiver.sms.SMSReceiver">
+        <receiver android:name="com.example.tomato.broadcast.receiver.sms.SMSReceiver">
             <intent-filter android:priority="999">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
             </intent-filter>
         </receiver>
-        <receiver android:enabled="true" android:name=".broadcast.receiver.boot.BootUpReceiver"
+        <receiver android:enabled="true" android:name="com.example.tomato.broadcast.receiver.boot.BootUpReceiver"
                   android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </receiver>
-        <receiver android:enabled="true" android:name=".broadcast.receiver.boot.NetworkStatusReceiver"
+        <receiver android:enabled="true" android:name="com.example.tomato.broadcast.receiver.boot.NetworkStatusReceiver"
                   android:permission="android.permission.ACCESS_NETWORK_STATE">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
             </intent-filter>
         </receiver>
-        <service android:name=".service.SMSBackgroundService" android:enabled="true"/>
+        <service android:name="com.example.tomato.service.SMSBackgroundService" android:enabled="true"/>
     </application>
 </manifest>
