@@ -2,7 +2,6 @@ package com.example.tomato;
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.AlertDialog;
 import android.content.*;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -21,18 +20,16 @@ import com.example.tomato.model.Layout;
 import com.example.tomato.model.ReceivedSMS;
 import com.example.tomato.model.SentSMS;
 import com.example.tomato.service.SMSBackgroundService;
-import com.example.tomato.somecrazyshit.TimesReadableString;
 
 import java.util.*;
 
-public class MainActivity extends Activity implements Alertable{
+public class MainActivity extends Activity{
 
     private final ReceivedSMSAuditAdapter receivedSMSAuditAdapter = ReceivedSMSAuditAdapterImpl.getInstance();
     private final SentSMSAuditAdapter sentSMSAuditAdapter = SentSMSAuditAdapterImpl.getInstance();
     private final InternalSettings internalSettings = InternalSettings.getInstance();
     private final Settings settings = Settings.getInstance();
     private List<View> allViews = new ArrayList<View>();
-    private static TimesReadableString alert = new TimesReadableString(2);
 
     /**
      * Called when the activity is first created.
@@ -45,26 +42,22 @@ public class MainActivity extends Activity implements Alertable{
         createUI();
     }
 
-    public static void setAlertText(String text) {
-        alert.setText(text);
-    }
-
     @Override
-    public void alert() {
-        new AlertDialog.Builder(this)
-                .setMessage(alert.getText())
-                .setNeutralButton("OK", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                })
-                .create().show();
-    }
-
-    @Override
-    public boolean shouldBeAlerted() {
-        return alert.getText() != null;
+    public void onBackPressed() {
+        Integer id = null;
+        for (View view : allViews) {
+            if (view.getVisibility() == View.VISIBLE){
+                id = view.getId();
+                break;
+            }
+        }
+        if (id!=null && id !=R.id.mainScreen){
+            setAllLayoutsToGone();
+            findViewById(R.id.mainScreen).setVisibility(View.VISIBLE);
+            refreshToggleScheduleCheckButton();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void initialize() {
@@ -103,13 +96,13 @@ public class MainActivity extends Activity implements Alertable{
         });
 
         View toggleScheduledCheck = findViewById(R.id.toggleScheduledCheck);
-        refreshToggleScheduleCheckButton();
         toggleScheduledCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggleScheduledCheck();
             }
         });
+        refreshToggleScheduleCheckButton();
         findViewById(R.id.settingsButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -226,29 +219,5 @@ public class MainActivity extends Activity implements Alertable{
             }
         }
         return false;
-    }
-
-    private static class MyRunnable implements Runnable{
-
-        private Alertable alertable;
-
-        private MyRunnable(Alertable alertable) {
-            this.alertable=alertable;
-        }
-
-        @Override
-        public void run() {
-            while (true){
-                if (alertable.shouldBeAlerted()){
-                    alertable.alert();
-                }
-                try {
-                    Thread.sleep(1000L);
-                } catch (InterruptedException e) {
-                    //TODO LOGGER
-                    return;
-                }
-            }
-        }
     }
 }

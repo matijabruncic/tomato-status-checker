@@ -76,7 +76,6 @@ public class SMSBackgroundService extends Service{
         activity = PendingIntent.getBroadcast(this, 0, new Intent("SMS sender"), 0);
         startAlarm();
         registerReceiver(SMSSender.getInstance(), new IntentFilter("SMS sender"));
-        running=true;
     }
 
     public void startAlarm() {
@@ -121,13 +120,10 @@ public class SMSBackgroundService extends Service{
 
     public void notification(CharSequence text) {
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        Notification notification = new Notification(R.drawable.ic_launcher, "Status critical", System.currentTimeMillis());
+        Notification notification = new Notification(R.drawable.alert, "Status critical", System.currentTimeMillis());
 
-        // The PendingIntent to launch our activity if the user selects this notification
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0,
                 new Intent(this, MainActivity.class), 0);
-
-        // Set the info for the views that show in the notification panel.
         notification.setLatestEventInfo(this, "Status critical",
                 text, contentIntent);
 

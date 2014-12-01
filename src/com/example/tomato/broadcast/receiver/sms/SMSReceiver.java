@@ -52,7 +52,6 @@ public class SMSReceiver extends BroadcastReceiver {
                     }
                     if (!alertText.toString().trim().equals("")){
                         service.notification(alertText);
-                        MainActivity.setAlertText(alertText.toString());
                     }
                 } catch (Exception e){
                     //TODO LOGGER

@@ -52,7 +52,7 @@
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                       android:text="Minute alert threshold" android:id="@+id/minuteAlertThresholdText" android:layout_column="0"/>
             <SeekBar android:layout_width="wrap_content" android:layout_height="wrap_content"
-                     android:id="@+id/minuteAlertThresholdInput" android:layout_column="2" android:max="1000"
+                     android:id="@+id/minuteAlertThresholdInput" android:layout_column="2" android:max="1500"
                      android:indeterminate="false"/>
         </TableRow>
         <TableRow android:layout_width="fill_parent" android:layout_height="fill_parent"
@@ -61,7 +61,7 @@
                       android:text="Internet traffic alert threshold" android:id="@+id/internetTrafficAlertThresholdText"
                       android:layout_column="0"/>
             <SeekBar android:layout_width="wrap_content" android:layout_height="wrap_content"
-                     android:id="@+id/internetTrafficAlertThresholdInput" android:layout_column="2" android:max="1000"
+                     android:id="@+id/internetTrafficAlertThresholdInput" android:layout_column="2" android:max="1500"
                      android:indeterminate="false"/>
         </TableRow>
         <TableRow android:layout_width="fill_parent" android:layout_height="fill_parent"
@@ -70,7 +70,7 @@
                       android:text="SMS count alert threshold"
                       android:layout_column="0" android:id="@+id/smsCountThresholdText"/>
             <SeekBar android:layout_width="wrap_content" android:layout_height="wrap_content"
-                     android:id="@+id/smsCountThresholdInput" android:layout_column="2" android:max="1000"
+                     android:id="@+id/smsCountThresholdInput" android:layout_column="2" android:max="1500"
                      android:indeterminate="false"/>
         </TableRow>
         <TableRow android:layout_width="fill_parent" android:layout_height="fill_parent"
