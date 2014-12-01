@@ -4,3 +4,4 @@
 *.iml
 *.apk
 /target
+/assets/local*

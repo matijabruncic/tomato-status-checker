@@ -6,4 +6,5 @@
     <string name="toggleScheduledCheck">Toggle scheduled check</string>
     <string name="printSentSMSesButtonText">Print sent SMSes</string>
     <string name="printReceivedSMSesButton">Print received SMSes</string>
+    <string name="crash_toast_text">Crash</string>
 </resources>
