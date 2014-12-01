@@ -42,7 +42,7 @@ public class SentSMSAuditAdapterImpl implements SentSMSAuditAdapter {
     @Override
     public List<SentSMS> findAll(Context context) {
         SQLiteDatabase readableDatabase = getReadableDatabase(context);
-        Cursor cursor = readableDatabase.rawQuery("select * from " + SentSMSesProvider.SentSmsesEntity.TABLE_NAME, null);
+        Cursor cursor = readableDatabase.rawQuery("select * from " + SentSMSesProvider.SentSmsesEntity.TABLE_NAME + " limit 10", null);
         List<SentSMS> result = new ArrayList<SentSMS>();
         if (cursor.moveToFirst()){
             while (!cursor.isAfterLast()){

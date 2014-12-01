@@ -44,7 +44,7 @@ public class ReceivedSMSAuditAdapterImpl implements ReceivedSMSAuditAdapter {
     @Override
     public List<ReceivedSMS> findAll(Context context) {
         SQLiteDatabase readableDatabase = getReadableDatabase(context);
-        Cursor cursor = readableDatabase.rawQuery("select * from " + ReceivedSMSesProvider.ReceivedSMSesEntity.TABLE_NAME, null);
+        Cursor cursor = readableDatabase.rawQuery("select * from " + ReceivedSMSesProvider.ReceivedSMSesEntity.TABLE_NAME + " limit 10", null);
         List<ReceivedSMS> result = new ArrayList<ReceivedSMS>();
         if (cursor.moveToFirst()){
             while (!cursor.isAfterLast()){
